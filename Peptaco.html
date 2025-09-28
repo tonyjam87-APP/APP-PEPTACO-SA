@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Peptaco-SA | Gestión Institucional</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 30px;
+      text-align: center;
+    }
+    .logo-principal {
+      max-width: 400px;
+      margin-top: 30px;
+    }
+    .login {
+      margin-top: 100px;
+    }
+    .login input {
+      padding: 10px;
+      margin: 10px;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    .login button {
+      padding: 10px 20px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .menu {
+      display: none;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+    .boton-panel {
+      padding: 30px 40px;
+      font-size: 22px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+    .boton-panel:hover {
+      transform: scale(1.05);
+    }
+    .modulo {
+      display: none;
+      background: white;
+      padding: 30px;
+      margin-top: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+    }
+    h2 {
+      color: #0077cc;
+      margin-bottom: 20px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      margin-top: 20px;
+      background-color: #0077cc;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    #estado-envio {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+    .contacto-iconos {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .contacto-iconos p {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      margin: 8px 0;
+    }
+    .contacto-iconos img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="loginForm" class="login">
+    <h2>🔐 Iniciar sesión</h2>
+    <input type="text" id="usuario" placeholder="Usuario" required>
+    <input type="password" id="contrasena" placeholder="Contraseña" required>
+    <button onclick="validarCredenciales()">Acceder</button>
+    <div id="loginError" style="color:red; margin-top:10px;"></div>
+    <img src="https://tonyjam87-app.github.io/PepTaCo-SA/LogoPeptaco.png" alt="Logo Peptaco SA" class="logo-principal">
+  </div>
+
+  <div class="menu">
+    <button class="boton-panel" onclick="mostrarPanel('pedido')">🛒 Hace tu pedido</button>
+    <button class="boton-panel" onclick="mostrarPanel('reclamo')">📢 Hace tu reclamo</button>
+    <button class="boton-panel" onclick="mostrarPanel('seguimiento')">🚚 Seguimiento de envío</button>
+    <button class="boton-panel" onclick="mostrarPanel('contacto')">📞 Contactate con nosotros</button>
+  </div>
+
+  <div id="cerrarSesionBloque" style="margin-top: 30px;">
+    <button onclick="cerrarSesion()">🔒 Cerrar sesión</button>
+  </div>
+
+  <div id="pedido" class="modulo">
+    <h2>🛒 Hace tu pedido</h2>
+    <form onsubmit="event.preventDefault(); enviarFormulario('pedido');">
+      <label>Cliente:</label><input type="text" name="cliente" required>
+      <label>Mail:</label><input type="email" name="mail" required>
+      <label>Dirección:</label><input type="text" name="direccion" required>
+      <label>Localidad:</label><input type="text" name="localidad" required>
+      <label>Artículo:</label><input type="text" name="articulo" required>
+      <label>Cantidad:</label><input type="number" name="cantidad" min="1" required>
+      <label>Tipo de pedido:</label>
+      <select name="pedido" required>
+        <option value="">Seleccionar</option>
+        <option>URGENTE</option>
+        <option>ESTÁNDAR</option>
+        <option>PROGRAMADO</option>
+      </select>
+      <label>Mensaje adicional:</label><textarea rows="4"></textarea>
+      <button type="submit">Enviar Pedido</button>
+    </form>
+    <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+  </div>
+
+  <div id="reclamo" class="modulo">
+    <h2>📢 Hace tu reclamo</h2>
+    <form onsubmit="event.preventDefault(); enviarFormulario('reclamo');">
+      <label>Cliente:</label><input type="text" name="cliente" required>
+      <label>Dirección:</label><input type="text" name="direccion" required>
+      <label>Localidad:</label><input type="text" name="localidad" required>
+      <label>Número de pedido:</label><input type="text" name="codigo" required>
+      <label>Motivo del reclamo:</label>
+      <select name="motivo" required>
+        <option value="">Seleccionar</option>
+        <option>Producto defectuoso</option>
+        <option>Demora en entrega</option>
+        <option>Pedido incorrecto</option>
+        <option>Atención al cliente</option>
+        <option>Otro</option>
+      </select>
+      <label>Mensaje adicional:</label><textarea rows="4"></textarea>
+      <button type="submit">Enviar Reclamo</button>
+    </form>
+    <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+  </div>
+  <div id="seguimiento" class="modulo">
+    <h2>🚚 Seguimiento de envío</h2>
+    <form onsubmit="event.preventDefault(); enviarFormulario('seguimiento'); verEstado();">
+      <label>Cliente:</label><input type="text" name="cliente" required>
+      <label>Número de pedido:</label><input type="text" name="codigo" id="codigo-envio" required>
+      <button type="submit">Ver Estado</button>
+      <p id="estado-envio"></p>
+    </form>
+    <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+  </div>
+
+  <div id="contacto" class="modulo">
+    <h2>📞 Contactate con nosotros</h2>
+    <form onsubmit="event.preventDefault(); enviarFormulario('contacto');">
+      <label>Cliente:</label><input type="text" name="cliente" required>
+      <label>Mail:</label><input type="email" name="mail" required>
+      <label>Dirección:</label><input type="text" name="direccion" required>
+      <label>Localidad:</label><input type="text" name="localidad" required>
+      <label>Mensaje:</label><textarea rows="4"></textarea>
+      <button type="submit">Enviar Mensaje</button>
+    </form>
+    <div class="contacto-iconos">
+      <p><img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Gmail">
+        <a href="mailto:scamellogistic@gmail.com" target="_blank">scamellogistic@gmail.com</a></p>
+      <p><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+        <a href="https://wa.me/541134763028" target="_blank">+54 11 3476-3028</a></p>
+      <p><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+        <a href="https://www.instagram.com/Scamel2025" target="_blank">@Scamel2025</a></p>
+    </div>
+    <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+  </div>
+
+  <!-- Script institucional original -->
+  <script>
+    function validarCredenciales() {
+      const usuario = document.getElementById("usuario").value.trim();
+      const contrasena = document.getElementById("contrasena").value.trim();
+      const error = document.getElementById("loginError");
+
+      if (usuario === "PeptacoSA" && contrasena === "EDI2025") {
+        document.getElementById("loginForm").style.display = "none";
+        document.querySelector(".menu").style.display = "grid";
+        document.getElementById("cerrarSesionBloque").style.display = "block";
+      } else {
+        error.textContent = "❌ Usuario o contraseña incorrectos";
+        document.querySelector(".menu").style.display = "none";
+        document.querySelectorAll(".modulo").forEach(p => p.style.display = "none");
+        document.getElementById("cerrarSesionBloque").style.display = "none";
+      }
+    }
+
+    function mostrarPanel(id) {
+      document.querySelector('.menu').style.display = 'none';
+      document.getElementById('cerrarSesionBloque').style.display = 'none';
+      document.querySelectorAll('.modulo').forEach(p => p.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function volverAlMenu() {
+      document.querySelectorAll('.modulo').forEach(p => p.style.display = 'none');
+      document.querySelector('.menu').style.display = 'grid';
+      document.getElementById('cerrarSesionBloque').style.display = 'block';
+    }
+
+    function cerrarSesion() {
+      document.querySelector(".menu").style.display = "none";
+      document.getElementById("cerrarSesionBloque").style.display = "none";
+      document.querySelectorAll(".modulo").forEach(p => p.style.display = "none");
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("usuario").value = "";
+      document.getElementById("contrasena").value = "";
+      document.getElementById("loginError").textContent = "";
+    }
+
+    function verEstado() {
+      const codigo = document.getElementById("codigo-envio").value.trim();
+      const estado = document.getElementById("estado-envio");
+
+      switch (codigo) {
+        case "1234":
+          estado.textContent = "✅ Pedido en camino";
+          estado.style.color = "green";
+          break;
+        case "5678":
+          estado.textContent = "📦 Pedido entregado";
+          estado.style.color = "blue";
+          break;
+        case "9999":
+          estado.textContent = "⏳ Pedido en preparación";
+          estado.style.color = "orange";
+          break;
+        default:
+          estado.textContent = "❌ Número de pedido no encontrado";
+          estado.style.color = "red";
+      }
+    }
+
+    window.onload = function () {
+      document.querySelector(".menu").style.display = "none";
+      document.querySelectorAll(".modulo").forEach(p => p.style.display = "none");
+      document.getElementById("cerrarSesionBloque").style.display = "none";
+    };
+  </script>
+
+  <!-- Bloque de integración con Google Sheets -->
+  <script>
+    function enviarFormulario(tipo) {
+      const datos = {
+        tipo: tipo,
+        cliente: document.querySelector(`#${tipo} input[name='cliente']`)?.value || "",
+        mail: document.querySelector(`#${tipo} input[name='mail']`)?.value || "",
+        direccion: document.querySelector(`#${tipo} input[name='direccion']`)?.value || "",
+        localidad: document.querySelector(`#${tipo} input[name='localidad']`)?.value || "",
+        articulo: document.querySelector(`#${tipo} input[name='articulo']`)?.value || "",
+        cantidad: document.querySelector(`#${tipo} input[name='cantidad']`)?.value || "",
+        pedido: document.querySelector(`#${tipo} select[name='pedido']`)?.value || "",
+        motivo: document.querySelector(`#${tipo} select[name='motivo']`)?.value || "",
+        codigo: document.querySelector(`#${tipo} input[name='codigo']`)?.value || "",
+        mensaje: document.querySelector(`#${tipo} textarea`)?.value || ""
+      };
+
+fetch("https://hook.us2.make.com/vs3n2o1ug48cgtbucuaaevhez5dcvwn7", {
+       method: "POST",
+       body: JSON.stringify(datos),
+       headers: { "Content-Type": "application/json" }
+})
+      .then(res => res.text())
+      .then(msg => alert(msg))
+      .catch(err => alert("❌ Error al registrar"));
+    }
+  </script>
+</body>
+</html>
