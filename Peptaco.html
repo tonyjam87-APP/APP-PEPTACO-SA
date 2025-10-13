@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Peptaco-SA | Gestión Institucional</title>
+
+  <!-- ✅ Estilos originales + ajustes para tabla de seguimiento -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 30px;
+      text-align: center;
+    }
+
+    .logo-principal {
+      max-width: 400px;
+      margin-top: 30px;
+    }
+
+    .login {
+      margin-top: 100px;
+    }
+
+    .login input {
+      padding: 10px;
+      margin: 10px;
+      width: 250px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    .login button {
+      padding: 10px 20px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .menu {
+      display: none;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      max-width: 800px;
+      margin: auto;
+    }
+
+    .boton-panel {
+      padding: 30px 40px;
+      font-size: 22px;
+      background-color: #0077cc;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.2s;
+    }
+
+    .boton-panel:hover {
+      transform: scale(1.05);
+    }
+
+    .modulo {
+      display: none;
+      background: white;
+      padding: 30px;
+      margin-top: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      max-width: 100vw;
+      overflow-x: auto;
+      margin-left: auto;
+      margin-right: auto;
+      text-align: left;
+      position: relative;
+      box-sizing: border-box;
+    }
+
+    #tablaSeguimiento {
+      min-width: 1200px;
+    }
+
+    h2 {
+      color: #0077cc;
+      margin-bottom: 20px;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 20px;
+      background-color: #0077cc;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    #estado-envio {
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .contacto-iconos {
+      margin-top: 20px;
+      text-align: left;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .contacto-iconos p {
+      display: flex;
+      align-items: center;
+      font-size: 16px;
+      margin: 8px 0;
+    }
+
+    .contacto-iconos img {
+      width: 20px;
+      height: 20px;
+      margin-right: 10px;
+    }
+
+    #tablaCatalogo thead th,
+    #tablaCatalogo td {
+      text-align: center !important;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .dataTables_wrapper .dataTables_paginate {
+      margin-top: 30px;
+      text-align: center;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      margin: 0 6px;
+      padding: 8px 14px;
+      background-color: #0077cc;
+      color: white !important;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background-color: #005fa3;
+    }
+
+    #catalogo {
+      position: relative;
+    }
+
+    #volverCatalogo {
+      position: absolute;
+      bottom: 20px;
+      right: 30px;
+      background-color: #0077cc;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      z-index: 10;
+    }
+
+    #volverCatalogo:hover {
+      background-color: #005fa3;
+    }
+
+    /* ✅ Ajustes específicos para legibilidad del panel de seguimiento */
+    #tablaSeguimiento th:nth-child(2),
+    #tablaSeguimiento td:nth-child(2) {
+      min-width: 220px;
+    }
+
+    #tablaSeguimiento th:nth-child(5),
+    #tablaSeguimiento td:nth-child(5) {
+      min-width: 280px;
+    }
+
+    #tablaSeguimiento th:nth-child(6),
+    #tablaSeguimiento td:nth-child(6),
+    #tablaSeguimiento th:nth-child(7),
+    #tablaSeguimiento td:nth-child(7),
+    #tablaSeguimiento th:nth-child(8),
+    #tablaSeguimiento td:nth-child(8),
+    #tablaSeguimiento th:nth-child(9),
+    #tablaSeguimiento td:nth-child(9),
+    #tablaSeguimiento th:nth-child(10),
+    #tablaSeguimiento td:nth-child(10) {
+      min-width: 140px;
+    }
+
+    #tablaSeguimiento,
+    #tablaSeguimiento th,
+    #tablaSeguimiento td {
+      border: 1px solid #ccc;
+      border-collapse: collapse;
+    }
+
+    #tablaSeguimiento th,
+    #tablaSeguimiento td {
+      padding: 8px;
+      white-space: nowrap;
+      text-align: center;
+      vertical-align: middle;
+    }
+  </style>
+
+  <!-- ✅ Librerías necesarias -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+  <!-- ✅ Script para colorear tipo de pedido -->
+  <script>
+    $(document).ready(function () {
+      setTimeout(function () {
+        $('#tablaSeguimiento tbody tr').each(function () {
+          const tipo = $(this).find('td:nth-child(4)').text().trim();
+          const celda = $(this).find('td:nth-child(4)');
+
+          if (tipo === 'ESTÁNDAR') {
+            celda.css('color', '#0077cc');
+          } else if (tipo === 'URGENTE') {
+            celda.css('color', '#cc0000');
+          } else if (tipo === 'PROGRAMADO') {
+            celda.css('color', '#e6a800');
+          }
+        });
+      }, 500); // espera breve para asegurar que la tabla esté renderizada
+    });
+  </script>
+</head>
+
+<body>
+
+  <!-- ✅ Script de carga dinámica desde GitHub -->
+  <script>
+    $(document).ready(function () {
+      Papa.parse("https://raw.githubusercontent.com/tonyjam87-APP/APP-PEPTACO-SA/main/Catalogo%20Peptaco_UFT8.csv", {
+        download: true,
+        header: true,
+        delimiter: ";",
+        complete: function (results) {
+          const campos = results.meta.fields;
+          const columnas = campos.map(campo => ({
+            title: campo,
+            data: campo,
+            className: "text-center"
+          }));
+
+          $('#tablaCatalogo').DataTable({
+            data: results.data,
+            columns: columnas,
+            language: {
+              url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+            },
+            responsive: true,
+            paging: true,
+            searching: true,
+            ordering: true,
+            lengthChange: false,
+            scrollX: true
+          });
+        }
+      });
+    });
+  </script>
+
+  <div id="loginForm" class="login">
+    <h2>🔐 Iniciar sesión</h2>
+    <input type="text" id="usuario" placeholder="Usuario" required>
+    <input type="password" id="contrasena" placeholder="Contraseña" required>
+    <button onclick="validarCredenciales()">Acceder</button>
+    <div id="loginError" style="color:red; margin-top:10px;"></div>
+    <img src="https://tonyjam87-app.github.io/PepTaCo-SA/LogoPeptaco.png" alt="Logo Peptaco SA" class="logo-principal">
+  </div>
+
+  <div class="menu">
+    <button class="boton-panel" onclick="mostrarPanel('pedido')">🛒 Hace tu pedido</button>
+    <button class="boton-panel" onclick="mostrarPanel('reclamo')">📢 Hace tu reclamo</button>
+    <button class="boton-panel" onclick="mostrarPanel('seguimiento')">🚚 Seguimiento de envío</button>
+    <button class="boton-panel" onclick="mostrarPanel('contacto')">📞 Contactate con nosotros</button>
+    <button class="boton-panel" onclick="mostrarPanel('catalogo')">📦 Ver catálogo mayorista</button>
+  </div>
+
+  <div id="cerrarSesionBloque" style="margin-top: 30px;">
+    <button onclick="cerrarSesion()">🔒 Cerrar sesión</button>
+  </div>
+
+  <div id="pedido" class="modulo">
+    <img src="https://tonyjam87-app.github.io/PepTaCo-SA/LogoScamel.png" alt="Logo Scamel" style="position:absolute; top:30px; right:30px; width:90px;">
+    <h2>🛒 Hace tu pedido</h2>
+    <form onsubmit="event.preventDefault(); enviarFormulario('pedido');">
+      <label>Cliente:</label><input type="text" name="cliente" required>
+      <label>Mail:</label><input type="email" name="mail" required>
+      <label>Dirección:</label><input type="text" name="direccion" required>
+      <label>Localidad:</label><input type="text" name="localidad" required>
+      <label>Artículo:</label><input type="text" name="articulo" required>
+      <label>Cantidad:</label><input type="number" name="cantidad" min="1" required>
+      <label>Tipo de pedido:</label>
+      <select name="pedido" required>
+        <option value="">Seleccionar</option>
+        <option>URGENTE</option>
+        <option>ESTÁNDAR</option>
+        <option>PROGRAMADO</option>
+      </select>
+      <label>Mensaje adicional:</label><textarea rows="4"></textarea>
+      <button type="submit">Enviar Pedido</button>
+    </form>
+    <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+  </div>
+
+  <div id="reclamo" class="modulo">
+    <img src="https://tonyjam87-app.github.io/PepTaCo-SA/LogoScamel.png" alt="Logo Scamel" style="position:absolute; top:30px; right:30px; width:90px;">
+    <h2>📢 Hace tu reclamo</h2>
+    <form onsubmit="event.preventDefault(); enviarFormulario('reclamo');">
+      <label>Cliente:</label><input type="text" name="cliente" required>
+      <label>Mail:</label><input type="email" name="mail" required>
+      <label>Dirección:</label><input type="text" name="direccion" required>
+      <label>Localidad:</label><input type="text" name="localidad" required>
+      <label>Número de pedido:</label><input type="text" name="codigo" required>
+      <label>Motivo del reclamo:</label>
+      <select name="motivo" required>
+        <option value="">Seleccionar</option>
+        <option>Producto defectuoso</option>
+        <option>Demora en entrega</option>
+        <option>Pedido incorrecto</option>
+        <option>Atención al cliente</option>
+        <option>Otro</option>
+      </select>
+      <label>Mensaje adicional:</label><textarea rows="4"></textarea>
+      <button type="submit">Enviar Reclamo</button>
+    </form>
+    <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+  </div>
+
+<!-- 🔍 Panel de seguimiento institucional -->
+<div id="seguimiento" class="modulo">
+  <img src="https://tonyjam87-app.github.io/PepTaCo-SA/LogoScamel.png" alt="Logo Scamel" style="position:absolute; top:30px; right:30px; width:90px;">
+  <h2>🚚 Seguimiento de pedidos</h2>
+  <table id="tablaSeguimiento" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>Pedido</th>
+        <th>Articulo</th>
+        <th>Cantidad</th>
+        <th>Tipo de pedido</th>
+        <th>Mensaje</th>
+        <th>Cliente</th>
+        <th>Orden recibida</th>
+        <th>Preparando pedido</th>
+        <th>En centro de distribución</th>
+        <th>En camino</th>
+        <th>Entregado</th>
+      </tr>
+    </thead>
+  </table>
+  <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+</div>
+
+<style>
+  /* ✅ Centrado de encabezados y celdas en todas las columnas */
+  #tablaSeguimiento th,
+  #tablaSeguimiento td {
+    text-align: center !important;
+    vertical-align: middle !important;
+    white-space: nowrap;
+    border: 1px solid #ccc;
+    padding: 6px;
+  }
+
+  /* ✅ Scroll horizontal y ancho mínimo por columna */
+  #tablaSeguimiento th:nth-child(2),
+  #tablaSeguimiento td:nth-child(2) {
+    min-width: 220px;
+  }
+
+  #tablaSeguimiento th:nth-child(5),
+  #tablaSeguimiento td:nth-child(5) {
+    min-width: 280px;
+  }
+
+  #tablaSeguimiento th:nth-child(7),
+  #tablaSeguimiento td:nth-child(7),
+  #tablaSeguimiento th:nth-child(8),
+  #tablaSeguimiento td:nth-child(8),
+  #tablaSeguimiento th:nth-child(9),
+  #tablaSeguimiento td:nth-child(9),
+  #tablaSeguimiento th:nth-child(10),
+  #tablaSeguimiento td:nth-child(10),
+  #tablaSeguimiento th:nth-child(11),
+  #tablaSeguimiento td:nth-child(11) {
+    min-width: 140px;
+  }
+</style>
+
+<script>
+$(document).ready(function () {
+  Papa.parse("https://raw.githubusercontent.com/tonyjam87-APP/APP-PEPTACO-SA/main/Estado_de_pedidos_UFT8.csv", {
+    download: true,
+    header: true,
+    delimiter: ";",
+    skipEmptyLines: true,
+    complete: function (results) {
+      const columnas = [
+        { title: "Pedido", data: "Pedido" },
+        { title: "Articulo", data: "Articulo" },
+        { title: "Cantidad", data: "Cantidad" },
+        { title: "Tipo de pedido", data: "Tipo de pedido" },
+        { title: "Mensaje", data: "Mensaje" },
+        { title: "Cliente", data: "Cliente" },
+        { title: "Orden recibida", data: "Orden recibida" },
+        { title: "Preparando pedido", data: "Preparando pedido" },
+        { title: "En centro de distribución", data: "En centro de distribución" },
+        { title: "En camino", data: "En camino" },
+        { title: "Entregado", data: "Entregado" }
+      ];
+
+      const tabla = $('#tablaSeguimiento').DataTable({
+        data: results.data,
+        columns: columnas,
+        language: {
+          url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+        },
+        responsive: true,
+        paging: false,
+        searching: true,
+        ordering: true,
+        lengthChange: false,
+        scrollX: true,
+        initComplete: function () {
+          // ✅ Colorear tipo de pedido
+          $('#tablaSeguimiento tbody tr').each(function () {
+            const tipo = $(this).find('td:nth-child(4)').text().trim();
+            const celda = $(this).find('td:nth-child(4)');
+
+            if (tipo === 'ESTÁNDAR') {
+              celda.css('color', '#0077cc');
+            } else if (tipo === 'URGENTE') {
+              celda.css('color', '#cc0000');
+            } else if (tipo === 'PROGRAMADO') {
+              celda.css('color', '#e6a800');
+            }
+          });
+        }
+      });
+    }
+  });
+});
+</script>
+   <div id="contacto" class="modulo">
+    <img src="https://tonyjam87-app.github.io/PepTaCo-SA/LogoScamel.png" alt="Logo Scamel" style="position:absolute; top:30px; right:30px; width:90px;">
+    <h2>📞 Contactate con nosotros</h2>
+    <form onsubmit="event.preventDefault(); enviarFormulario('contacto');">
+      <label>Cliente:</label><input type="text" name="cliente" required>
+      <label>Mail:</label><input type="email" name="mail" required>
+      <label>Dirección:</label><input type="text" name="direccion" required>
+      <label>Localidad:</label><input type="text" name="localidad" required>
+      <label>Mensaje:</label><textarea rows="4"></textarea>
+      <button type="submit">Enviar Mensaje</button>
+    </form>
+    <div class="contacto-iconos">
+      <p><img src="https://upload.wikimedia.org/wikipedia/commons/4/4e/Gmail_Icon.png" alt="Gmail">
+        <a href="mailto:scamellogistic@gmail.com" target="_blank">scamellogistic@gmail.com</a></p>
+      <p><img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+        <a href="https://wa.me/541134763028" target="_blank">+54 11 3476-3028</a></p>
+      <p><img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Instagram_icon.png" alt="Instagram">
+        <a href="https://www.instagram.com/Scamel2025" target="_blank">@Scamel2025</a></p>
+    </div>
+    <button onclick="volverAlMenu()">⬅ Volver atrás</button>
+  </div>
+
+<div id="catalogo" class="modulo" style="max-width:95%; padding:40px;">
+  <img src="https://tonyjam87-app.github.io/PepTaCo-SA/LogoScamel.png" alt="Logo Scamel" style="position:absolute; top:30px; right:30px; width:90px;">
+  <h2>📦 Catálogo mayorista institucional</h2>
+  <table id="tablaCatalogo" class="display" style="width:100%"></table>
+
+  <button id="volverCatalogo" onclick="volverAlMenu()">⬅ Volver atrás</button>
+</div>
+
+<script>
+function guardarCodigo() {
+  // Función vacía para evitar error si no está definida
+}
+</script>
+
+</body>
+</html>
+
+  <!-- Script institucional original -->
+  <script>
+    function validarCredenciales() {
+      const usuario = document.getElementById("usuario").value.trim();
+      const contrasena = document.getElementById("contrasena").value.trim();
+      const error = document.getElementById("loginError");
+
+      if (usuario === "PeptacoSA" && contrasena === "EDI2025") {
+        document.getElementById("loginForm").style.display = "none";
+        document.querySelector(".menu").style.display = "grid";
+        document.getElementById("cerrarSesionBloque").style.display = "block";
+      } else {
+        error.textContent = "❌ Usuario o contraseña incorrectos";
+        document.querySelector(".menu").style.display = "none";
+        document.querySelectorAll(".modulo").forEach(p => p.style.display = "none");
+        document.getElementById("cerrarSesionBloque").style.display = "none";
+      }
+    }
+
+    function mostrarPanel(id) {
+      document.querySelector('.menu').style.display = 'none';
+      document.getElementById('cerrarSesionBloque').style.display = 'none';
+      document.querySelectorAll('.modulo').forEach(p => p.style.display = 'none');
+      document.getElementById(id).style.display = 'block';
+    }
+
+    function volverAlMenu() {
+      document.querySelectorAll('.modulo').forEach(p => p.style.display = 'none');
+      document.querySelector('.menu').style.display = 'grid';
+      document.getElementById('cerrarSesionBloque').style.display = 'block';
+    }
+
+    function cerrarSesion() {
+      document.querySelector(".menu").style.display = "none";
+      document.getElementById("cerrarSesionBloque").style.display = "none";
+      document.querySelectorAll(".modulo").forEach(p => p.style.display = "none");
+      document.getElementById("loginForm").style.display = "block";
+      document.getElementById("usuario").value = "";
+      document.getElementById("contrasena").value = "";
+      document.getElementById("loginError").textContent = "";
+    }
+
+    function verEstado() {
+      const codigo = document.getElementById("codigo-envio").value.trim();
+      const estado = document.getElementById("estado-envio");
+
+      switch (codigo) {
+        case "1234":
+          estado.textContent = "✅ Pedido en camino";
+          estado.style.color = "green";
+          break;
+        case "5678":
+          estado.textContent = "📦 Pedido entregado";
+          estado.style.color = "blue";
+          break;
+        case "9999":
+          estado.textContent = "⏳ Pedido en preparación";
+          estado.style.color = "orange";
+          break;
+        default:
+          estado.textContent = "❌ Número de pedido no encontrado";
+          estado.style.color = "red";
+      }
+    }
+
+    window.onload = function () {
+      document.querySelector(".menu").style.display = "none";
+      document.querySelectorAll(".modulo").forEach(p => p.style.display = "none");
+      document.getElementById("cerrarSesionBloque").style.display = "none";
+    };
+  </script>
+
+<!-- Scripts para cargar el catálogo institucional -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    Papa.parse("https://raw.githubusercontent.com/tonyjam87-APP/APP-PEPTACO-SA/main/Catalogo%20Peptaco_UFT8.csv", {
+  download: true,
+  header: true,
+  delimiter: ";",
+  complete: function (results) {
+    const campos = results.meta.fields;
+    const columnas = campos.map(campo => ({
+      title: campo,
+      data: campo,
+      className: "text-center"
+    }));
+
+    $('#tablaCatalogo').DataTable({
+      data: results.data,
+      columns: columnas,
+      language: {
+        url: "//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json"
+      },
+      responsive: true,
+      paging: true,
+      searching: true,
+      ordering: true,
+      lengthChange: false,
+      scrollX: true
+    });
+  }
+});
+  });
+</script>
+
+  <!-- Bloque de integración con Google Sheets -->
+  <script>
+// ✅ Función institucional para enviar formularios completos
+function enviarFormulario(tipo) {
+  const contenedor = document.querySelector(`#${tipo}`);
+  const formulario = contenedor.querySelector("form");
+
+  const datos = {
+    tipo: tipo,
+    cliente: formulario.querySelector('[name="cliente"]')?.value || "",
+    mail: formulario.querySelector('[name="mail"]')?.value || "",
+    direccion: formulario.querySelector('[name="direccion"]')?.value || "",
+    localidad: formulario.querySelector('[name="localidad"]')?.value || "",
+    articulo: formulario.querySelector('[name="articulo"]')?.value || "",
+    cantidad: formulario.querySelector('[name="cantidad"]')?.value || "",
+    pedido: formulario.querySelector('[name="pedido"]')?.value || "",
+    codigo: formulario.querySelector('[name="codigo"]')?.value || "",
+    motivo: formulario.querySelector('[name="motivo"]')?.value || "",
+    mensaje: formulario.querySelector('textarea')?.value || ""
+  };
+
+  fetch("https://hook.us2.make.com/vs3n2o1ug48cgtbucuaaevhez5dcvwn7", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(datos)
+  })
+  .then(res => res.ok ? alert("✅ Enviado correctamente") : alert("❌ Error al registrar"))
+  .then(() => formulario.reset())
+  .catch(() => alert("❌ Error de conexión"));
+}
+</script>
